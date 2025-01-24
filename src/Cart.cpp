@@ -1,5 +1,5 @@
 #include "Cart.h"
-
+#include <iomanip>
 // static arrays
 extern const char *ROM_TYPES[] = {
     "ROM ONLY",
@@ -146,12 +146,14 @@ Cartridge::Cartridge(char *rom_name)
     header = (rom_header *)(rom_data.data() + 0x100);
     header->title[15] = 0;
 
-    printf("\t Title    : %s\n", header->title);
-    printf("\t Type     : %2.2X (%s)\n", header->type, cart_type_name());
-    printf("\t ROM Size : %d KB\n", 32 << header->rom_size);
-    printf("\t RAM Size : %2.2X\n", header->ram_size);
-    printf("\t LIC Code : %2.2X (%s)\n", header->lic_code, cart_lic_name());
-    printf("\t ROM Vers : %2.2X\n", header->version);
+    std::cout << "\t Title    : " << header->title << "\n";
+    std::cout << "\t Type     : " << std::setw(2) << std::setfill('0') << std::hex << header->type 
+              << " (" << cart_type_name() << ")\n";
+    std::cout << "\t ROM Size : " << (32 << header->rom_size) << " KB\n";
+    std::cout << "\t RAM Size : " << std::setw(2) << std::setfill('0') << std::hex << header->ram_size << "\n";
+    std::cout << "\t LIC Code : " << std::setw(2) << std::setfill('0') << std::hex << header->lic_code 
+              << " (" << cart_lic_name() << ")\n";
+    std::cout << "\t ROM Vers : " << std::setw(2) << std::setfill('0') << std::hex << header->version << "\n";
 }
 
 
