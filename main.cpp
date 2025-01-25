@@ -3,5 +3,5 @@
 using namespace std;
 
 int main(int argv,char ** argc){
-    EMU gamrboy(argv,argc);
+    EMU gameboy(argv,argc);
 }
