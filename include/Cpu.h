@@ -61,6 +61,7 @@ public:
 
     void cpu_exec_ld();
     void cpu_exec_ldh();
+    
     void cpu_exec_jp();
     void cpu_exec_pop();
     void cpu_exec_push();
@@ -68,6 +69,10 @@ public:
     void cpu_exec_call();
     void cpu_exec_rst();
     void cpu_exec_ret();
+    
+    void cpu_exec_inc();
+    void cpu_exec_dec();
+    void cpu_set_flags(int8_t z, int8_t n, int8_t h, int8_t c);
 };
 
 #endif

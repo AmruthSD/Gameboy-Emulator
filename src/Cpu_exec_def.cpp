@@ -115,3 +115,64 @@ void Cpu::cpu_exec_push(){
     stack_push(lo);
 }
 
+
+// Arithmetic 
+
+void Cpu::cpu_set_flags(int8_t z, int8_t n, int8_t h, int8_t c) {
+    if (z != -1) {
+        BIT_SET(regs.f, 7, z);
+    }
+
+    if (n != -1) {
+        BIT_SET(regs.f, 6, n);
+    }
+
+    if (h != -1) {
+        BIT_SET(regs.f, 5, h);
+    }
+
+    if (c != -1) {
+        BIT_SET(regs.f, 4, c);
+    }
+}
+
+void Cpu::cpu_exec_inc(){
+    uint16_t  val = cpu_read_reg(inst.reg_1) + 1;
+
+    if(inst.reg_1 == RT_HL && inst.mode == AM_MR){
+        val = bus->bus_read(cpu_read_reg(RT_HL)) + 1;
+        val &= 0xFF;
+        bus->bus_write(cpu_read_reg(RT_HL),val);
+    }
+    else{
+        cpu_set_reg(inst.reg_1,val);
+        val = cpu_read_reg(inst.reg_1);
+    }
+
+    if((cur_opcode & 0x03) == 0x03){
+        return;
+    }
+
+    cpu_set_flags(val == 0, 0, (val & 0x0F) == 0, -1);
+
+}
+
+void Cpu::cpu_exec_dec(){
+    uint16_t  val = cpu_read_reg(inst.reg_1) - 1;
+
+    if(inst.reg_1 == RT_HL && inst.mode == AM_MR){
+        val = bus->bus_read(cpu_read_reg(RT_HL)) - 1;
+        bus->bus_write(cpu_read_reg(RT_HL),val);
+    }
+    else{
+        cpu_set_reg(inst.reg_1,val);
+        val = cpu_read_reg(inst.reg_1);
+    }
+
+    if((cur_opcode & 0x0B) == 0x0B){
+        return;
+    }
+
+    cpu_set_flags(val == 0, 1, (val & 0x0F) == 0x0F, -1);
+}
+

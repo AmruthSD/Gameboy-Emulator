@@ -47,18 +47,19 @@ void Cpu::cpu_execute(){
         cpu_exec_ret();
         return;
 
-        
+    case IN_INC:
+        cpu_exec_inc();
+        return;
+    
+    case IN_DEC:
+        cpu_exec_dec();
+        return;
+
     default:
         break;
     } 
 }
 
-//     [IN_DI] = proc_di,
-//     [IN_CALL] = proc_call,
-//     [IN_RET] = proc_ret,
-//     [IN_RST] = proc_rst,
-//     [IN_DEC] = proc_dec,
-//     [IN_INC] = proc_inc,
 //     [IN_ADD] = proc_add,
 //     [IN_ADC] = proc_adc,
 //     [IN_SUB] = proc_sub,
@@ -80,3 +81,4 @@ void Cpu::cpu_execute(){
 //     [IN_CCF] = proc_ccf,
 //     [IN_EI] = proc_ei,
 //     [IN_RETI] = proc_reti
+//     [IN_DI] = proc_di,
