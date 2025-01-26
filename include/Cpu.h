@@ -65,6 +65,9 @@ public:
     void cpu_exec_pop();
     void cpu_exec_push();
     void cpu_exec_jr();
+    void cpu_exec_call();
+    void cpu_exec_rst();
+    void cpu_exec_ret();
 };
 
 #endif

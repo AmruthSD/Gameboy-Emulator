@@ -66,6 +66,38 @@ void Cpu::cpu_exec_jr(){
     }
 }
 
+void Cpu::cpu_exec_call(){
+    bool z = CPU_FLAG_Z;
+    bool c = CPU_FLAG_C;
+    bool pos = check_cond(z,c,inst);
+    if(pos){
+        stack_push16(regs.pc);
+        regs.pc = fetched_data;
+    }
+}
+
+void Cpu::cpu_exec_rst(){
+    bool z = CPU_FLAG_Z;
+    bool c = CPU_FLAG_C;
+    bool pos = check_cond(z,c,inst);
+    if(pos){
+        stack_push16(regs.pc);
+        regs.pc = inst.param;
+    }
+}
+
+void Cpu::cpu_exec_ret(){
+    bool z = CPU_FLAG_Z;
+    bool c = CPU_FLAG_C;
+    bool pos = check_cond(z,c,inst);
+    if(pos){
+        uint16_t lo = stack_pop();
+        uint16_t hi = stack_pop();
+        uint16_t n = (hi<<8) | lo;
+        regs.pc = n;
+    }
+}
+
 void Cpu::cpu_exec_pop(){
     uint16_t lo = stack_pop();
     uint16_t hi = stack_pop();
@@ -82,3 +114,4 @@ void Cpu::cpu_exec_push(){
     uint16_t lo = cpu_read_reg(inst.reg_1) & 0xFF;
     stack_push(lo);
 }
+

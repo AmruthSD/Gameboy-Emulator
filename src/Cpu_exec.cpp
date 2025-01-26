@@ -35,6 +35,19 @@ void Cpu::cpu_execute(){
         cpu_exec_push();
         return;
 
+    case IN_CALL:
+        cpu_exec_call();
+        return;
+
+    case IN_RST:
+        cpu_exec_rst();
+        return;
+
+    case IN_RET:
+        cpu_exec_ret();
+        return;
+
+        
     default:
         break;
     } 
