@@ -236,3 +236,191 @@ void Cpu::cpu_exec_add(){
     cpu_set_reg(inst.reg_1, val & 0xFFFF);
     cpu_set_flags(z, 0, h, c);
 }
+
+
+// Logical
+void Cpu::cpu_exec_and(){
+    regs.a &= fetched_data;
+    cpu_set_flags(regs.a == 0, 0, 1, 0);
+}
+
+void Cpu::cpu_exec_or(){
+    regs.a |= fetched_data & 0xFF;
+    cpu_set_flags(regs.a == 0, 0, 0, 0);
+}
+
+void Cpu::cpu_exec_xor(){
+    regs.a ^= fetched_data & 0xFF;
+    cpu_set_flags(regs.a == 0, 0, 0, 0);
+}
+
+void Cpu::cpu_exec_cp(){
+    int n = (int)regs.a - (int)fetched_data;
+    cpu_set_flags(n == 0, 1, ((int)regs.a & 0x0F) - ((int)fetched_data & 0x0F) < 0, n < 0);
+}
+
+reg_type rt_lookup[] = {
+    RT_B,
+    RT_C,
+    RT_D,
+    RT_E,
+    RT_H,
+    RT_L,
+    RT_HL,
+    RT_A
+};
+
+reg_type decode_reg(uint8_t reg) {
+    if (reg > 0b111) {
+        return RT_NONE;
+    }
+
+    return rt_lookup[reg];
+}
+
+void Cpu::cpu_exec_cb(){
+    uint8_t op = fetched_data;
+    reg_type reg = decode_reg(op & 0b111);
+    uint8_t bit = (op>>3) & 0b111;
+    uint8_t bit_op = (op>>6) & 0b11;
+    uint8_t reg_val = cpu_read_reg8(reg);
+
+    switch(bit_op) {
+        case 1:
+            //BIT
+            cpu_set_flags( !(reg_val & (1 << bit)), 0, 1, -1);
+            return;
+
+        case 2:
+            //RST
+            reg_val &= ~(1 << bit);
+            cpu_set_reg8(reg, reg_val);
+            return;
+
+        case 3:
+            //SET
+            reg_val |= (1 << bit);
+            cpu_set_reg8(reg, reg_val);
+            return;
+    }
+
+    bool flagC = CPU_FLAG_C;
+
+    switch(bit) {
+        case 0: {
+            //RLC
+            bool setC = false;
+            uint8_t result = (reg_val << 1) & 0xFF;
+
+            if ((reg_val & (1 << 7)) != 0) {
+                result |= 1;
+                setC = true;
+            }
+
+            cpu_set_reg8(reg, result);
+            cpu_set_flags( result == 0, false, false, setC);
+        } return;
+
+        case 1: {
+            //RRC
+            uint8_t old = reg_val;
+            reg_val >>= 1;
+            reg_val |= (old << 7);
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags( !reg_val, false, false, old & 1);
+        } return;
+
+        case 2: {
+            //RL
+            uint8_t old = reg_val;
+            reg_val <<= 1;
+            reg_val |= flagC;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags( !reg_val, false, false, !!(old & 0x80));
+        } return;
+
+        case 3: {
+            //RR
+            uint8_t old = reg_val;
+            reg_val >>= 1;
+
+            reg_val |= (flagC << 7);
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags( !reg_val, false, false, old & 1);
+        } return;
+
+        case 4: {
+            //SLA
+            uint8_t old = reg_val;
+            reg_val <<= 1;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags( !reg_val, false, false, !!(old & 0x80));
+        } return;
+
+        case 5: {
+            //SRA
+            uint8_t u = (int8_t)reg_val >> 1;
+            cpu_set_reg8(reg, u);
+            cpu_set_flags( !u, 0, 0, reg_val & 1);
+        } return;
+
+        case 6: {
+            //SWAP
+            reg_val = ((reg_val & 0xF0) >> 4) | ((reg_val & 0xF) << 4);
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags( reg_val == 0, false, false, false);
+        } return;
+
+        case 7: {
+            //SRL
+            uint8_t u = reg_val >> 1;
+            cpu_set_reg8(reg, u);
+            cpu_set_flags( !u, 0, 0, reg_val & 1);
+        } return;
+    }
+}
+
+//Shifting
+void Cpu::cpu_exec_rlca(){
+    uint8_t u = regs.a;
+    bool c = (u >> 7) & 1;
+    u = (u << 1) | c;
+    regs.a = u;
+
+    cpu_set_flags(0, 0, 0, c);
+}
+
+void Cpu::cpu_exec_rla(){
+    uint8_t u = regs.a;
+    uint8_t cf = CPU_FLAG_C;
+    uint8_t c = (u >> 7) & 1;
+
+    regs.a = (u << 1) | cf;
+    cpu_set_flags(0, 0, 0, c);
+}
+
+void Cpu::cpu_exec_rrca(){
+    uint8_t b = regs.a & 1;
+    regs.a >>= 1;
+    regs.a |= (b << 7);
+
+    cpu_set_flags(0, 0, 0, b);
+}
+
+void Cpu::cpu_exec_rra(){
+    uint8_t carry = CPU_FLAG_C;
+    uint8_t new_c = regs.a & 1;
+
+    regs.a >>= 1;
+    regs.a |= (carry << 7);
+
+    cpu_set_flags(0, 0, 0, new_c);
+}
+
+
+
+

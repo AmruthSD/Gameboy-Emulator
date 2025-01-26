@@ -77,6 +77,18 @@ public:
     void cpu_exec_sub();
     void cpu_exec_sbc();
     void cpu_exec_adc();
+
+    void cpu_exec_and();
+    void cpu_exec_or();
+    void cpu_exec_xor();
+    void cpu_exec_cp();
+
+    void cpu_exec_cb();
+
+    void cpu_exec_rlca();
+    void cpu_exec_rrca();
+    void cpu_exec_rla();
+    void cpu_exec_rra();
 };
 
 #endif

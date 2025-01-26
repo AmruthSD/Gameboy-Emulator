@@ -71,20 +71,47 @@ void Cpu::cpu_execute(){
         cpu_exec_adc();
         return;
 
+    case IN_OR:
+        cpu_exec_or();
+        return;
+    
+    case IN_AND:
+        cpu_exec_and();
+        return;
+
+    case IN_XOR:
+        cpu_exec_xor();
+        return;
+    
+    case IN_CP:
+        cpu_exec_cp();
+        return;
+
+    case IN_CB:
+        cpu_exec_cb();
+        return;
+
+    case IN_RRCA:
+        cpu_exec_rrca();
+        return;
+    
+    case IN_RLCA:
+        cpu_exec_rlca();
+        return;
+    
+    case IN_RRA:
+        cpu_exec_rra();
+        return;
+
+    case IN_RLA:
+        cpu_exec_rla();
+        return;
+
     default:
         break;
     } 
 }
 
-//     [IN_AND] = proc_and,
-//     [IN_XOR] = proc_xor,
-//     [IN_OR] = proc_or,
-//     [IN_CP] = proc_cp,
-//     [IN_CB] = proc_cb,
-//     [IN_RRCA] = proc_rrca,
-//     [IN_RLCA] = proc_rlca,
-//     [IN_RRA] = proc_rra,
-//     [IN_RLA] = proc_rla,
 //     [IN_STOP] = proc_stop,
 //     [IN_HALT] = proc_halt,
 //     [IN_DAA] = proc_daa,
