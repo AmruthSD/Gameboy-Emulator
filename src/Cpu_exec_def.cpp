@@ -176,3 +176,63 @@ void Cpu::cpu_exec_dec(){
     cpu_set_flags(val == 0, 1, (val & 0x0F) == 0x0F, -1);
 }
 
+
+void Cpu::cpu_exec_sub(){
+    uint16_t val = cpu_read_reg(inst.reg_1) - fetched_data;
+
+    int z = val == 0;
+    int h = ((int)cpu_read_reg(inst.reg_1) & 0xF) - ((int)fetched_data & 0xF) < 0;
+    int c = ((int)cpu_read_reg(inst.reg_1)) - ((int)fetched_data) < 0;
+
+    cpu_set_reg(inst.reg_1, val);
+    cpu_set_flags(z, 1, h, c);
+}
+
+void Cpu::cpu_exec_sbc(){
+    uint8_t val = fetched_data + CPU_FLAG_C;
+
+    int z = cpu_read_reg(inst.reg_1) - val == 0;
+
+    int h = ((int)cpu_read_reg(inst.reg_1) & 0xF) - ((int)fetched_data & 0xF) - ((int)CPU_FLAG_C) < 0;
+    int c = ((int)cpu_read_reg(inst.reg_1)) - ((int)fetched_data) - ((int)CPU_FLAG_C) < 0;
+
+    cpu_set_reg(inst.reg_1, cpu_read_reg(inst.reg_1) - val);
+    cpu_set_flags(z, 1, h, c);
+}
+
+void Cpu::cpu_exec_adc(){
+    uint16_t u = fetched_data;
+    uint16_t a = regs.a;
+    uint16_t c = CPU_FLAG_C;
+
+    regs.a = (a + u + c) & 0xFF;
+
+    cpu_set_flags(regs.a == 0, 0, (a & 0xF) + (u & 0xF) + c > 0xF, a + u + c > 0xFF);
+}
+
+void Cpu::cpu_exec_add(){
+    uint32_t val = cpu_read_reg(inst.reg_1) + fetched_data;
+    bool is_16_bit = is_16_bit_reg(inst.reg_1);
+
+    if(inst.reg_1 == RT_SP){
+        val = cpu_read_reg(inst.reg_1) + (int8_t)fetched_data;
+    }
+    int z = (val & 0xFF) == 0;
+    int h = (cpu_read_reg(inst.reg_1) & 0xF) + (fetched_data & 0xF) >= 0x10;
+    int c = (int)(cpu_read_reg(inst.reg_1) & 0xFF) + (int)(fetched_data & 0xFF) >= 0x100;
+    if (is_16_bit) {
+        z = -1;
+        h = (cpu_read_reg(inst.reg_1) & 0xFFF) + (fetched_data & 0xFFF) >= 0x1000;
+        uint32_t n = ((uint32_t)cpu_read_reg(inst.reg_1)) + ((uint32_t)fetched_data);
+        c = n >= 0x10000;
+    }
+
+    if (inst.reg_1 == RT_SP) {
+        z = 0;
+        h = (cpu_read_reg(inst.reg_1) & 0xF) + (fetched_data & 0xF) >= 0x10;
+        c = (int)(cpu_read_reg(inst.reg_1) & 0xFF) + (int)(fetched_data & 0xFF) > 0x100;
+    }
+
+    cpu_set_reg(inst.reg_1, val & 0xFFFF);
+    cpu_set_flags(z, 0, h, c);
+}

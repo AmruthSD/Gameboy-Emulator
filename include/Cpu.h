@@ -70,9 +70,13 @@ public:
     void cpu_exec_rst();
     void cpu_exec_ret();
     
+    void cpu_set_flags(int8_t z, int8_t n, int8_t h, int8_t c);
     void cpu_exec_inc();
     void cpu_exec_dec();
-    void cpu_set_flags(int8_t z, int8_t n, int8_t h, int8_t c);
+    void cpu_exec_add();
+    void cpu_exec_sub();
+    void cpu_exec_sbc();
+    void cpu_exec_adc();
 };
 
 #endif

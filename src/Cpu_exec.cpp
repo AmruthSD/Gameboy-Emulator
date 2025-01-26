@@ -55,15 +55,27 @@ void Cpu::cpu_execute(){
         cpu_exec_dec();
         return;
 
+    case IN_SUB:
+        cpu_exec_sub();
+        return;
+    
+    case IN_SBC:
+        cpu_exec_sbc();
+        return;
+    
+    case IN_ADD:
+        cpu_exec_add();
+        return;
+    
+    case IN_ADC:
+        cpu_exec_adc();
+        return;
+
     default:
         break;
     } 
 }
 
-//     [IN_ADD] = proc_add,
-//     [IN_ADC] = proc_adc,
-//     [IN_SUB] = proc_sub,
-//     [IN_SBC] = proc_sbc,
 //     [IN_AND] = proc_and,
 //     [IN_XOR] = proc_xor,
 //     [IN_OR] = proc_or,
