@@ -16,7 +16,10 @@ void Cpu::cpu_exec_ld(){
     }
     else{
         if(inst.mode == AM_HL_SPR){
-            // spr
+            uint8_t hflag = (cpu_read_reg(inst.reg_2) & 0xF) + (fetched_data & 0xF) >= 0x10;
+            uint8_t cflag = (cpu_read_reg(inst.reg_2) & 0xFF) + (fetched_data & 0xFF) >= 0x100;
+            cpu_set_flags(0, 0, hflag, cflag);
+            cpu_set_reg(inst.reg_1, cpu_read_reg(inst.reg_2) + (int8_t)fetched_data);
         }
         else{
             cpu_set_reg(inst.reg_1,fetched_data);
@@ -385,6 +388,7 @@ void Cpu::cpu_exec_cb(){
 }
 
 //Shifting
+
 void Cpu::cpu_exec_rlca(){
     uint8_t u = regs.a;
     bool c = (u >> 7) & 1;
@@ -421,6 +425,55 @@ void Cpu::cpu_exec_rra(){
     cpu_set_flags(0, 0, 0, new_c);
 }
 
+// Flags OPerations
 
+void Cpu::cpu_exec_daa(){
+    uint8_t u = 0;
+    int fc = 0;
+    if (CPU_FLAG_H || (!CPU_FLAG_N && (regs.a & 0xF) > 9)) {
+        u = 6;
+    }
+    if (CPU_FLAG_C || (!CPU_FLAG_N && regs.a > 0x99)) {
+        u |= 0x60;
+        fc = 1;
+    }
+    regs.a += CPU_FLAG_N ? -u : u;
 
+    cpu_set_flags(regs.a == 0, -1, 0, fc);
+}
 
+void Cpu::cpu_exec_cpl(){
+    regs.a = ~regs.a;
+    cpu_set_flags(-1, 1, 1, -1);
+}
+
+void Cpu::cpu_exec_scf(){
+    cpu_set_flags( -1, 0, 0, 1);
+}
+
+void Cpu::cpu_exec_ccf(){
+    cpu_set_flags( -1, 0, 0, CPU_FLAG_C ^ 1);
+}
+
+// Interrupt
+
+void Cpu::cpu_exec_halt(){
+    halted = true;
+}
+
+void Cpu::cpu_exec_stop(){
+    
+}
+
+void Cpu::cpu_exec_ei(){
+    enabling_ime = true;
+}
+
+void Cpu::cpu_exec_di(){
+    int_master_enabled = false;
+}
+
+void Cpu::cpu_exec_reti(){
+    int_master_enabled = true;
+    cpu_exec_ret();
+}

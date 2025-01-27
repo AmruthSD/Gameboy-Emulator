@@ -107,17 +107,43 @@ void Cpu::cpu_execute(){
         cpu_exec_rla();
         return;
 
+    case IN_DAA:
+        cpu_exec_daa();
+        return;
+
+    case IN_CPL:
+        cpu_exec_cpl();
+        return;
+    
+    case IN_SCF:
+        cpu_exec_scf();
+        return;
+
+    case IN_CCF:
+        cpu_exec_ccf();
+        return;
+    
+    case IN_HALT:
+        cpu_exec_halt();
+        return;
+
+    case IN_EI:
+        cpu_exec_ei();
+        return;
+
+    case IN_RETI:
+        cpu_exec_reti();
+        return;
+
+    case IN_DI:
+        cpu_exec_di();
+        return;
+    
+    case IN_STOP:
+        cpu_exec_stop();
+        return;
+
     default:
         break;
     } 
 }
-
-//     [IN_STOP] = proc_stop,
-//     [IN_HALT] = proc_halt,
-//     [IN_DAA] = proc_daa,
-//     [IN_CPL] = proc_cpl,
-//     [IN_SCF] = proc_scf,
-//     [IN_CCF] = proc_ccf,
-//     [IN_EI] = proc_ei,
-//     [IN_RETI] = proc_reti
-//     [IN_DI] = proc_di,

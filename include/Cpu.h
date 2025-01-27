@@ -27,6 +27,14 @@ typedef struct {
     uint16_t sp;
 } cpu_registers;
 
+typedef enum {
+    IT_VBLANK = 1,
+    IT_LCD_STAT = 2,
+    IT_TIMER = 4,
+    IT_SERIAL = 8,
+    IT_JOYPAD = 16
+} interrupt_type;
+
 class Cpu
 {
 private:
@@ -38,7 +46,13 @@ private:
     uint8_t cur_opcode;
     instruction inst;
     Bus *bus;
-    stack <uint16_t> st;
+    
+    bool halted;
+    bool stepping;
+    bool int_master_enabled;
+    bool enabling_ime;
+    uint8_t ie_register;
+    uint8_t int_flags;
 
 public:
 
@@ -89,6 +103,22 @@ public:
     void cpu_exec_rrca();
     void cpu_exec_rla();
     void cpu_exec_rra();
+
+    void cpu_exec_daa();
+    void cpu_exec_cpl();
+    void cpu_exec_scf();
+    void cpu_exec_ccf();
+
+    void cpu_exec_stop();
+    void cpu_exec_ei();
+    void cpu_exec_di();
+    void cpu_exec_halt();
+    void cpu_exec_reti();
+    
+    //void cpu_request_interrupt(interrupt_type t);
+    void cpu_handle_interrupts();
+    void int_handle( uint16_t address);
+    bool int_check(uint16_t address, interrupt_type it);
 };
 
 #endif
