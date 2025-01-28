@@ -156,5 +156,10 @@ Cartridge::Cartridge(char *rom_name)
     std::cout << "\t ROM Vers : " << std::setw(2) << std::setfill('0') << std::hex << header->version << "\n";
 }
 
+void Cartridge::cart_write(uint16_t address, uint8_t value){
 
+}
 
+uint8_t Cartridge::cart_read(uint16_t address){
+    return rom_data[address];
+}

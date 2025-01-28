@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Cart.h"
 #include "Cpu.h"
+#include "Bus.h"
 using namespace std;
 
 class EMU
@@ -14,6 +15,7 @@ private:
     bool running;
     uint64_t ticks;
     Cpu cpu;
+    Bus bus;
 
 public:
     EMU(int argv,char **argc);
