@@ -31,3 +31,15 @@ void Cpu::cpu_handle_interrupts() {
 
     } 
 }
+
+void Cpu::cpu_request_interrupt(interrupt_type t){
+    int_flags |= t;
+}
+
+uint8_t Cpu::cpu_get_ie_register(){
+    return ie_register;
+}
+
+void Cpu::cpu_set_ie_register(uint8_t value){
+    ie_register = value;
+}

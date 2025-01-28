@@ -2,11 +2,16 @@
 
 #include <iostream>
 #include "Cart.h"
+#include "Ram.h"
+#include "Cpu.h"
 
 class Bus
 {
 private:
     Cartridge *cart;
+    Ram *ram;
+    Cpu *cpu;
+
 public:
     uint8_t bus_read(uint16_t address);
     uint16_t bus_read16(uint16_t address);

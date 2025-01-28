@@ -4,8 +4,10 @@
 #include<iostream>
 #include "Instruction.h"
 #include "Bus.h"
+#include "Timer.h"
 #include <stack>
 #include "Common.h"
+
 
 #define CPU_FLAG_Z BIT(regs.f, 7)
 #define CPU_FLAG_N BIT(regs.f, 6)
@@ -46,7 +48,10 @@ private:
     uint8_t cur_opcode;
     instruction inst;
     Bus *bus;
+    Timer *timer;
     
+    uint64_t ticks;
+
     bool halted;
     bool stepping;
     bool int_master_enabled;
@@ -55,12 +60,14 @@ private:
     uint8_t int_flags;
 
 public:
-
+    
+    
     Cpu(/* args */);
     bool cpu_step();
     void cpu_execute();
     void cpu_fetch_data();
-    
+    void cpu_cycles(int num);
+
     uint16_t cpu_read_reg(reg_type rt);
     uint8_t cpu_read_reg8(reg_type rt);
     void cpu_set_reg(reg_type rt, uint16_t val);
@@ -115,10 +122,12 @@ public:
     void cpu_exec_halt();
     void cpu_exec_reti();
     
-    //void cpu_request_interrupt(interrupt_type t);
+    void cpu_request_interrupt(interrupt_type t);
     void cpu_handle_interrupts();
     void int_handle( uint16_t address);
     bool int_check(uint16_t address, interrupt_type it);
+    uint8_t cpu_get_ie_register();
+    void cpu_set_ie_register(uint8_t value);
 };
 
 #endif

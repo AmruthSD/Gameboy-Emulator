@@ -5,6 +5,8 @@
 #include "Cart.h"
 #include "Cpu.h"
 #include "Bus.h"
+#include "Timer.h"
+#include "Ram.h"
 using namespace std;
 
 class EMU
@@ -13,13 +15,15 @@ private:
     Cartridge cart;
     bool paused;
     bool running;
-    uint64_t ticks;
-    Cpu cpu;
-    Bus bus;
+    Cpu *cpu;
+    Bus *bus;
+    Timer *timer;
+    Ram *ram;
 
 public:
     EMU(int argv,char **argc);
-    ~EMU();
+    void cpu_run();
+    void link_classes();
 };
 
 #endif

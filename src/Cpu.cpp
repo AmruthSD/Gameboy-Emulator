@@ -4,7 +4,14 @@
 Cpu::Cpu(/* args */)
 {
     regs.pc = 0x100;
-    regs.a = 0x01;
+    regs.sp = 0xFFFE;
+    *((short *)&regs.a) = 0xB001;
+    *((short *)&regs.b) = 0x1300;
+    *((short *)&regs.d) = 0xD800;
+    *((short *)&regs.h) = 0x4D01;
+    ie_register = 0;
+    int_flags = 0;
+    int_master_enabled = false;
 }
 
 bool Cpu::cpu_step(){
@@ -13,10 +20,11 @@ bool Cpu::cpu_step(){
         cur_opcode = bus->bus_read(regs.pc);
         regs.pc++;
         inst = instruction_from_opcode(cur_opcode);
-        
+        cpu_cycles(1);
         cpu_execute();
     }
     else{
+        cpu_cycles(1);
         if(int_flags){
             halted = false;
         }
@@ -32,4 +40,14 @@ bool Cpu::cpu_step(){
     }
 
     return true;
+}
+
+void Cpu::cpu_cycles(int num){
+    int n = num * 4;
+    for (int i = 0; i < n; i++)
+    {
+        ticks++;
+        timer->timer_tick();
+    }
+    
 }

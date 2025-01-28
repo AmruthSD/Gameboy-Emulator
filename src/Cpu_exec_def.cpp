@@ -8,11 +8,13 @@ bool Cpu::is_16_bit_reg(reg_type rt){
 void Cpu::cpu_exec_ld(){
     if(dest_is_mem){
         if(is_16_bit_reg(inst.reg_2)){
+            cpu_cycles(1);
             bus->bus_write16(mem_dest,fetched_data);
         }
         else{
             bus->bus_write(mem_dest,fetched_data);
         }
+        cpu_cycles(1);
     }
     else{
         if(inst.mode == AM_HL_SPR){
@@ -34,6 +36,7 @@ void Cpu::cpu_exec_ldh(){
     else{
         bus->bus_write(mem_dest,regs.a);
     }
+    cpu_cycles(1);
 }
 
 bool check_cond(bool z,bool c,instruction inst){
@@ -56,6 +59,7 @@ void Cpu::cpu_exec_jp(){
     if(pos){
         regs.pc = fetched_data;
     }
+    cpu_cycles(1);
 }
 
 void Cpu::cpu_exec_jr(){
@@ -67,6 +71,7 @@ void Cpu::cpu_exec_jr(){
     if(pos){
         regs.pc = addr;
     }
+    cpu_cycles(1);
 }
 
 void Cpu::cpu_exec_call(){
@@ -75,8 +80,10 @@ void Cpu::cpu_exec_call(){
     bool pos = check_cond(z,c,inst);
     if(pos){
         stack_push16(regs.pc);
+        cpu_cycles(2);
         regs.pc = fetched_data;
     }
+    cpu_cycles(1);
 }
 
 void Cpu::cpu_exec_rst(){
@@ -85,25 +92,35 @@ void Cpu::cpu_exec_rst(){
     bool pos = check_cond(z,c,inst);
     if(pos){
         stack_push16(regs.pc);
+        cpu_cycles(2);
         regs.pc = inst.param;
     }
+    cpu_cycles(1);
 }
 
 void Cpu::cpu_exec_ret(){
+    if(inst.cond != CT_NONE){
+        cpu_cycles(1);
+    }
     bool z = CPU_FLAG_Z;
     bool c = CPU_FLAG_C;
     bool pos = check_cond(z,c,inst);
     if(pos){
         uint16_t lo = stack_pop();
+        cpu_cycles(1);
         uint16_t hi = stack_pop();
+        cpu_cycles(1);
         uint16_t n = (hi<<8) | lo;
         regs.pc = n;
+        cpu_cycles(1);
     }
 }
 
 void Cpu::cpu_exec_pop(){
     uint16_t lo = stack_pop();
+    cpu_cycles(1);
     uint16_t hi = stack_pop();
+    cpu_cycles(1);
     uint16_t n = (hi << 8)| lo;
     cpu_set_reg(inst.reg_1,n);
     if(inst.reg_1==RT_AF){
@@ -113,8 +130,11 @@ void Cpu::cpu_exec_pop(){
 
 void Cpu::cpu_exec_push(){
     uint16_t hi = (cpu_read_reg(inst.reg_1)>>8) & 0xFF;
+    cpu_cycles(1);
     stack_push(hi);
+    cpu_cycles(1);
     uint16_t lo = cpu_read_reg(inst.reg_1) & 0xFF;
+    cpu_cycles(1);
     stack_push(lo);
 }
 
@@ -142,6 +162,10 @@ void Cpu::cpu_set_flags(int8_t z, int8_t n, int8_t h, int8_t c) {
 void Cpu::cpu_exec_inc(){
     uint16_t  val = cpu_read_reg(inst.reg_1) + 1;
 
+    if(is_16_bit_reg(inst.reg_1)){
+        cpu_cycles(1);
+    }
+
     if(inst.reg_1 == RT_HL && inst.mode == AM_MR){
         val = bus->bus_read(cpu_read_reg(RT_HL)) + 1;
         val &= 0xFF;
@@ -162,6 +186,10 @@ void Cpu::cpu_exec_inc(){
 
 void Cpu::cpu_exec_dec(){
     uint16_t  val = cpu_read_reg(inst.reg_1) - 1;
+
+    if(is_16_bit_reg(inst.reg_1)){
+        cpu_cycles(1);
+    }
 
     if(inst.reg_1 == RT_HL && inst.mode == AM_MR){
         val = bus->bus_read(cpu_read_reg(RT_HL)) - 1;
@@ -207,7 +235,7 @@ void Cpu::cpu_exec_adc(){
     uint16_t u = fetched_data;
     uint16_t a = regs.a;
     uint16_t c = CPU_FLAG_C;
-
+    
     regs.a = (a + u + c) & 0xFF;
 
     cpu_set_flags(regs.a == 0, 0, (a & 0xF) + (u & 0xF) + c > 0xF, a + u + c > 0xFF);
@@ -216,6 +244,9 @@ void Cpu::cpu_exec_adc(){
 void Cpu::cpu_exec_add(){
     uint32_t val = cpu_read_reg(inst.reg_1) + fetched_data;
     bool is_16_bit = is_16_bit_reg(inst.reg_1);
+    if(is_16_bit_reg(inst.reg_1)){
+        cpu_cycles(1);
+    }
 
     if(inst.reg_1 == RT_SP){
         val = cpu_read_reg(inst.reg_1) + (int8_t)fetched_data;
@@ -233,7 +264,7 @@ void Cpu::cpu_exec_add(){
     if (inst.reg_1 == RT_SP) {
         z = 0;
         h = (cpu_read_reg(inst.reg_1) & 0xF) + (fetched_data & 0xF) >= 0x10;
-        c = (int)(cpu_read_reg(inst.reg_1) & 0xFF) + (int)(fetched_data & 0xFF) > 0x100;
+        c = (int)(cpu_read_reg(inst.reg_1) & 0xFF) + (int)(fetched_data & 0xFF) >= 0x100;
     }
 
     cpu_set_reg(inst.reg_1, val & 0xFFFF);
@@ -462,7 +493,7 @@ void Cpu::cpu_exec_halt(){
 }
 
 void Cpu::cpu_exec_stop(){
-    
+    cout<<"Stopped"<<'\n';
 }
 
 void Cpu::cpu_exec_ei(){
