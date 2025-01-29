@@ -1,6 +1,6 @@
 **/roms/
 
-
+**/_deps/
 # Compiled Object files
 **/.DS_Store
 *.slo

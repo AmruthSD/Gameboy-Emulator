@@ -6,7 +6,9 @@
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/src",
                 "/usr/include",
-                "/usr/local/include"
+                "/usr/local/include",
+                "${workspaceFolder}/_deps",
+                "${workspaceFolder}/_deps/sfml-src/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

@@ -37,6 +37,9 @@ typedef enum {
     IT_JOYPAD = 16
 } interrupt_type;
 
+class Bus;
+class Timer;
+
 class Cpu
 {
 private:

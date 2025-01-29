@@ -7,6 +7,7 @@
 #include "Bus.h"
 #include "Timer.h"
 #include "Ram.h"
+#include "Ui.h"
 using namespace std;
 
 class EMU

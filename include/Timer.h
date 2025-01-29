@@ -4,6 +4,8 @@
 #include "Cpu.h"
 using namespace std;
 
+class Cpu;
+
 class Timer
 {
 

@@ -6,8 +6,9 @@ EMU::EMU(int argv,char **argc) : cart(argv<2?nullptr:argc[1])
         cout<<"NO ARGUMENTS FOR ROM"<<'\n';
         return;
     }
-    link_classes();
-    cpu_run();
+    //link_classes();
+    //cpu_run();
+    Window_init();
 }
 
 void EMU::link_classes(){

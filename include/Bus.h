@@ -5,6 +5,8 @@
 #include "Ram.h"
 #include "Cpu.h"
 
+class Cpu;
+
 class Bus
 {
 private:

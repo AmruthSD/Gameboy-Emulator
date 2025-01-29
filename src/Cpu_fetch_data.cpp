@@ -50,7 +50,7 @@ void Cpu::cpu_fetch_data(){
         }
         return;
 
-    case AM_R_MR:
+    case AM_R_MR:{
         uint16_t addr = cpu_read_reg(inst.reg_2);
         if(inst.reg_1==RT_C){
             addr |= 0xFF00;
@@ -58,19 +58,20 @@ void Cpu::cpu_fetch_data(){
         fetched_data = bus->bus_read(addr);
         cpu_cycles(1);
         return;
+    }
 
-    case AM_R_HLI:
+    case AM_R_HLI:{
         fetched_data = bus->bus_read(cpu_read_reg(inst.reg_2));
         cpu_cycles(1);
         cpu_set_reg(RT_HL,cpu_read_reg(RT_HL)+1);
         return;
-    
-    case AM_R_HLD:
+    }
+    case AM_R_HLD:{
         fetched_data = bus->bus_read(cpu_read_reg(inst.reg_2));
         cpu_cycles(1);
         cpu_set_reg(RT_HL,cpu_read_reg(RT_HL)-1);
         return;
-
+    }
     case AM_HLI_R:
         fetched_data = cpu_read_reg(inst.reg_2);
         dest_is_mem = true;
@@ -111,7 +112,7 @@ void Cpu::cpu_fetch_data(){
         return;
 
     case AM_A16_R:
-    case AM_D16_R:
+    case AM_D16_R:{
         dest_is_mem = true;
         uint16_t lo = bus->bus_read(regs.pc);
         cpu_cycles(1);
@@ -121,7 +122,8 @@ void Cpu::cpu_fetch_data(){
         regs.pc += 2;
         fetched_data = cpu_read_reg(inst.reg_2);
         return;
-    
+    }
+
     case AM_MR_D8:
         fetched_data = bus->bus_read(regs.pc);
         cpu_cycles(1);
@@ -137,7 +139,7 @@ void Cpu::cpu_fetch_data(){
         cpu_cycles(1);
         return;
     
-    case AM_R_A16:
+    case AM_R_A16:{
         uint16_t lo = bus->bus_read(regs.pc);
         cpu_cycles(1);
         uint16_t hi = bus->bus_read(regs.pc +1);
@@ -146,8 +148,7 @@ void Cpu::cpu_fetch_data(){
         regs.pc+=2;
         fetched_data = bus->bus_read(addr);
         return;
-
-
+    }
 
     default:
         cout<<"Invalid Addressing Mode: "<<hex<<inst.mode<< " Opcode: "<<hex<<cur_opcode<<endl;
