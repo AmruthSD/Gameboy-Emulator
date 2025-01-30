@@ -34,6 +34,17 @@ void Lcd::LCDS_LYC_SET(bool b){
     return (BIT_SET(lcds, 2, b));
 }
 
+lcd_mode Lcd::LCDS_MODE(){
+    return (lcd_mode)(lcds & 0b11);
+}
+void Lcd::LCDS_MODE_SET(lcd_mode mode){
+    lcds &= ~0b11;
+    lcds |= mode;
+}
+uint8_t Lcd::LCDS_STAT_INT(uint8_t src){
+    return  lcds & src;
+}
+
 void Lcd::lcd_init(){
     lcdc = 0x91;
     scroll_x = 0;
@@ -85,7 +96,7 @@ void Lcd::lcd_write(uint16_t address, uint8_t value) {
 
     if (offset == 6) { 
         //0xFF46 = DMA
-        //dma_start(value);
+        DMA->dma_start(value);
     }
 
     if (address == 0xFF47) {

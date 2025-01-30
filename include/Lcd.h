@@ -1,10 +1,8 @@
 #pragma once
 #include "Common.h"
+#include "Dma.h"
 
 
-#define LCDS_MODE ((lcd_mode)(lcds & 0b11))
-#define LCDS_MODE_SET(mode) { lcds &= ~0b11; lcds |= mode; }
-#define LCDS_STAT_INT(src) (lcds & src)
 
 typedef enum {
     MODE_HBLANK,
@@ -19,6 +17,8 @@ typedef enum {
     SS_OAM = (1 << 5),
     SS_LYC = (1 << 6),
 } stat_src;
+
+class Dma;
 
 class Lcd
 {
@@ -39,6 +39,7 @@ private:
     uint32_t sp1_colors[4];
     uint32_t sp2_colors[4];
 
+    Dma *DMA;
 public:
     void lcd_init();
     uint8_t lcd_read(uint16_t address);
@@ -56,4 +57,8 @@ public:
     
     bool LCDS_LYC();
     void LCDS_LYC_SET(bool b);
+
+    lcd_mode LCDS_MODE();
+    void LCDS_MODE_SET(lcd_mode mode);
+    uint8_t LCDS_STAT_INT(uint8_t src);
 };

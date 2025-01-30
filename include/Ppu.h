@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "Lcd.h"
 
 static const int LINES_PER_FRAME = 154;
 static const int TICKS_PER_LINE = 456;
@@ -59,6 +60,8 @@ typedef struct _oam_line_entry {
     struct _oam_line_entry *next;
 } oam_line_entry;
 
+class Lcd;
+
 class Ppu
 {
 private:
@@ -78,6 +81,7 @@ private:
     uint32_t line_ticks;
     uint32_t *video_buffer;
 
+    Lcd *lcd;
 public:
     void ppu_init();
     void ppu_tick();
