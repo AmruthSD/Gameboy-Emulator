@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include "Lcd.h"
+#include "Cpu.h"
+#include "Cart.h"
 
 static const int LINES_PER_FRAME = 154;
 static const int TICKS_PER_LINE = 456;
@@ -61,6 +63,8 @@ typedef struct _oam_line_entry {
 } oam_line_entry;
 
 class Lcd;
+class Cpu;
+class Cartridge;
 
 class Ppu
 {
@@ -82,6 +86,9 @@ private:
     uint32_t *video_buffer;
 
     Lcd *lcd;
+    Cpu *cpu;
+    Cartridge *cart;
+
 public:
     void ppu_init();
     void ppu_tick();
@@ -92,5 +99,16 @@ public:
     void ppu_vram_write(uint16_t address, uint8_t value);
     uint8_t ppu_vram_read(uint16_t address); 
 
-};
+    void ppu_mode_oam();
+    void ppu_mode_xfer();
+    void ppu_mode_vblank();
+    void ppu_mode_hblank();
 
+    void load_line_sprites();
+    void increment_ly();
+
+    bool window_visible();
+    void pipeline_fifo_reset();
+    void pipeline_process();
+    
+};

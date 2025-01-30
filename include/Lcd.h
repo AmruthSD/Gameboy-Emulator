@@ -61,4 +61,10 @@ public:
     lcd_mode LCDS_MODE();
     void LCDS_MODE_SET(lcd_mode mode);
     uint8_t LCDS_STAT_INT(uint8_t src);
+
+    uint8_t get_ly();
+    void set_ly(uint8_t value);
+    void inc_ly();
+    uint8_t get_win_y();
+    uint8_t get_ly_compare();
 };

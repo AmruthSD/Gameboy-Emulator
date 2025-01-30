@@ -25,8 +25,7 @@ void Ppu::ppu_init(){
 
 void Ppu::ppu_tick(){
     line_ticks++;
-    /*
-    switch(LCDS_MODE) {
+    switch(lcd->LCDS_MODE()) {
     case MODE_OAM:
         ppu_mode_oam();
         break;
@@ -40,7 +39,7 @@ void Ppu::ppu_tick(){
         ppu_mode_hblank();
         break;
     }
-    */
+    
 }
 
 

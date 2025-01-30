@@ -107,3 +107,22 @@ void Lcd::lcd_write(uint16_t address, uint8_t value) {
         update_palette(value & 0b11111100, 2);
     }
 }
+
+uint8_t Lcd::get_ly(){
+    return ly;
+}
+
+void Lcd::set_ly(uint8_t value){
+    ly = value;
+}
+
+void Lcd::inc_ly(){
+    ly++;
+}
+
+uint8_t Lcd::get_win_y(){
+    return win_y;
+}
+uint8_t Lcd::get_ly_compare(){
+    return ly_compare;
+}
