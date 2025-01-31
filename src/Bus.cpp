@@ -6,8 +6,7 @@ uint8_t Bus::bus_read(uint16_t address){
         return cart->cart_read(address);
     } else if (address < 0xA000) {
         //Char/Map Data
-        //TODO
-        cout<<"NOT DONE"<<'\n';
+        return ppu->ppu_vram_read(address);
     } else if (address < 0xC000) {
         //Cartridge RAM
         return cart->cart_read(address);
@@ -19,26 +18,22 @@ uint8_t Bus::bus_read(uint16_t address){
         return 0;
     } else if (address < 0xFEA0) {
         //OAM
-        //TODO
-        cout<<"NOT DONE"<<'\n';
-        //NO_IMPL
-        return 0x0;
+        if (dma->dma_transferring()) {
+            return 0xFF;
+        }
+
+        return ppu->ppu_oam_read(address);
     } else if (address < 0xFF00) {
         //reserved unusable...
         return 0;
     } else if (address < 0xFF80) {
         //IO Registers...
-        //TODO
-        
-        //NO_IMPL
-        // return io_read(address);
+        return io->io_read(address);
     } else if (address == 0xFFFF) {
         //CPU ENABLE REGISTER...
-        //TODO
         return cpu->cpu_get_ie_register();
     }
 
-    //NO_IMPL
     return ram->hram_read(address);
 }
 
@@ -54,9 +49,7 @@ void Bus::bus_write(uint16_t address, uint8_t value){
         cart->cart_write(address, value);
     } else if (address < 0xA000) {
         //Char/Map Data
-        //TODO
-        cout<<"NOT DONE"<<'\n';
-        //NO_IMPL
+        ppu->ppu_vram_write(address, value);
     } else if (address < 0xC000) {
         //EXT-RAM
         cart->cart_write(address, value);
@@ -67,17 +60,16 @@ void Bus::bus_write(uint16_t address, uint8_t value){
         //reserved echo ram
     } else if (address < 0xFEA0) {
         //OAM
-
-        //TODO
-        cout<<"NOT DONE"<<'\n';
-       // NO_IMPL
+        if (dma->dma_transferring()) {
+            return;
+        }
+        
+        ppu->ppu_oam_write(address, value);
     } else if (address < 0xFF00) {
         //unusable reserved
     } else if (address < 0xFF80) {
         //IO Registers...
-        //TODO
-        // io_write(address, value);
-        //NO_IMPL
+        io->io_write(address, value);
     } else if (address == 0xFFFF) {
         //CPU SET ENABLE REGISTER
         

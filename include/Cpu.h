@@ -131,6 +131,8 @@ public:
     bool int_check(uint16_t address, interrupt_type it);
     uint8_t cpu_get_ie_register();
     void cpu_set_ie_register(uint8_t value);
+    void cpu_set_int_flags(uint8_t value);
+    uint8_t cpu_get_int_flags();
 };
 
 #endif

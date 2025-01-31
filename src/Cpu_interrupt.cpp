@@ -43,3 +43,11 @@ uint8_t Cpu::cpu_get_ie_register(){
 void Cpu::cpu_set_ie_register(uint8_t value){
     ie_register = value;
 }
+
+void Cpu::cpu_set_int_flags(uint8_t value){
+    int_flags = value;
+}
+
+uint8_t Cpu::cpu_get_int_flags(){
+    return int_flags;
+}
