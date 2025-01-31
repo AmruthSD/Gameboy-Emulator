@@ -123,6 +123,31 @@ void Lcd::inc_ly(){
 uint8_t Lcd::get_win_y(){
     return win_y;
 }
+
+uint8_t Lcd::get_win_x(){
+    return win_x;
+}
+
 uint8_t Lcd::get_ly_compare(){
     return ly_compare;
+}
+
+uint8_t Lcd::get_scroll_x(){
+    return scroll_x;
+}
+
+uint8_t Lcd::get_scroll_y(){
+    return scroll_y;
+}
+
+uint32_t* Lcd::get_sp1_colors(){
+    return sp1_colors;
+}
+
+uint32_t* Lcd::get_sp2_colors(){
+    return sp2_colors;
+}
+
+uint32_t* Lcd::get_bg_colors(){
+    return bg_colors;
 }

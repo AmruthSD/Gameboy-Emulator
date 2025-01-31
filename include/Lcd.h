@@ -67,4 +67,10 @@ public:
     void inc_ly();
     uint8_t get_win_y();
     uint8_t get_ly_compare();
+    uint8_t get_win_x();
+    uint8_t get_scroll_x();
+    uint8_t get_scroll_y();
+    uint32_t *get_sp1_colors();
+    uint32_t *get_sp2_colors();
+    uint32_t *get_bg_colors();
 };

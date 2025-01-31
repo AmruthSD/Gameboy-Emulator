@@ -4,6 +4,7 @@
 #include "Lcd.h"
 #include "Cpu.h"
 #include "Cart.h"
+#include "Bus.h"
 
 static const int LINES_PER_FRAME = 154;
 static const int TICKS_PER_LINE = 456;
@@ -65,6 +66,7 @@ typedef struct _oam_line_entry {
 class Lcd;
 class Cpu;
 class Cartridge;
+class Bus;
 
 class Ppu
 {
@@ -88,7 +90,8 @@ private:
     Lcd *lcd;
     Cpu *cpu;
     Cartridge *cart;
-
+    Bus *bus;
+    
 public:
     void ppu_init();
     void ppu_tick();
@@ -111,4 +114,15 @@ public:
     void pipeline_fifo_reset();
     void pipeline_process();
     
+    void pixel_fifo_push(uint32_t value);
+    uint32_t pixel_fifo_pop();
+    uint32_t fetch_sprite_pixels(int bit, uint32_t color, uint8_t bg_color);
+    bool pipeline_fifo_add();
+    void pipeline_load_sprite_tile();
+    void pipeline_load_sprite_data(uint8_t offset);
+    void pipeline_load_window_tile();
+    void pipeline_fetch();
+    void pipeline_push_pixel();
+    void pipeline_process();
+    void pipeline_fifo_reset();
 };
