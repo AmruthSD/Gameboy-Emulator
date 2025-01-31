@@ -163,3 +163,10 @@ void Cartridge::cart_write(uint16_t address, uint8_t value){
 uint8_t Cartridge::cart_read(uint16_t address){
     return rom_data[address];
 }
+
+bool Cartridge::cart_need_save(){
+
+}
+void Cartridge::cart_battery_save(){
+    
+}

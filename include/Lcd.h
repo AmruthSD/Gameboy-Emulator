@@ -39,6 +39,7 @@ private:
     uint32_t sp1_colors[4];
     uint32_t sp2_colors[4];
 
+public:
     Dma *DMA;
 public:
     void lcd_init();

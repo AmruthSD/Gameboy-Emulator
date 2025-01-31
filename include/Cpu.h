@@ -1,5 +1,4 @@
-#ifndef CPU_H
-#define CPU_H
+#pragma once
 
 #include<iostream>
 #include "Instruction.h"
@@ -7,8 +6,8 @@
 #include "Timer.h"
 #include <stack>
 #include "Common.h"
-
-
+#include "Ppu.h"
+#include "Dma.h"
 #define CPU_FLAG_Z BIT(regs.f, 7)
 #define CPU_FLAG_N BIT(regs.f, 6)
 #define CPU_FLAG_H BIT(regs.f, 5)
@@ -39,6 +38,8 @@ typedef enum {
 
 class Bus;
 class Timer;
+class Ppu;
+class Dma;
 
 class Cpu
 {
@@ -50,8 +51,7 @@ private:
     bool dest_is_mem;
     uint8_t cur_opcode;
     instruction inst;
-    Bus *bus;
-    Timer *timer;
+    
     
     uint64_t ticks;
 
@@ -62,6 +62,11 @@ private:
     uint8_t ie_register;
     uint8_t int_flags;
 
+public: 
+    Bus *bus;
+    Timer *timer;
+    Ppu *ppu;
+    Dma *dma;
 public:
     
     
@@ -134,5 +139,3 @@ public:
     void cpu_set_int_flags(uint8_t value);
     uint8_t cpu_get_int_flags();
 };
-
-#endif

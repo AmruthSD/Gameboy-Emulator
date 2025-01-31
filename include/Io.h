@@ -17,6 +17,8 @@ class Io
 {
 private:
     char serial_data[2];
+
+public:
     Dma *dma;
     Lcd *lcd;
     Timer *timer;

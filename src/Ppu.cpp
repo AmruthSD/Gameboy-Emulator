@@ -69,3 +69,7 @@ void Ppu::ppu_vram_write(uint16_t address, uint8_t value){
 uint8_t Ppu::ppu_vram_read(uint16_t address){
     return vram[address - 0x8000];
 } 
+
+uint32_t *Ppu::get_video_buffer(){
+    return video_buffer;
+}

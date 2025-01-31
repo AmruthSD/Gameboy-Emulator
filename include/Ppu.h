@@ -5,6 +5,7 @@
 #include "Cpu.h"
 #include "Cart.h"
 #include "Bus.h"
+#include "Ui.h"
 
 static const int LINES_PER_FRAME = 154;
 static const int TICKS_PER_LINE = 456;
@@ -67,6 +68,7 @@ class Lcd;
 class Cpu;
 class Cartridge;
 class Bus;
+class Ui;
 
 class Ppu
 {
@@ -87,10 +89,12 @@ private:
     uint32_t line_ticks;
     uint32_t *video_buffer;
 
+public:
     Lcd *lcd;
     Cpu *cpu;
     Cartridge *cart;
     Bus *bus;
+    Ui *ui;
     
 public:
     void ppu_init();
@@ -111,8 +115,6 @@ public:
     void increment_ly();
 
     bool window_visible();
-    void pipeline_fifo_reset();
-    void pipeline_process();
     
     void pixel_fifo_push(uint32_t value);
     uint32_t pixel_fifo_pop();
@@ -125,4 +127,6 @@ public:
     void pipeline_push_pixel();
     void pipeline_process();
     void pipeline_fifo_reset();
+
+    uint32_t *get_video_buffer();
 };

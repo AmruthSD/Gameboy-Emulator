@@ -100,8 +100,9 @@ void Ppu::ppu_mode_oam(){
 }
 
 void Ppu::ppu_mode_xfer(){
+    
     pipeline_process();
-
+    
     if (pfc.pushed_x >= XRES) {
         pipeline_fifo_reset();
 
@@ -148,12 +149,12 @@ void Ppu::ppu_mode_hblank(){
             current_frame++;
 
             //calc FPS...
-            //uint32_t end = get_ticks();
-            uint32_t end;
+            uint32_t end = ui->get_ticks();
+            
             uint32_t frame_time = end - prev_frame_time;
 
             if (frame_time < target_frame_time) {
-                //delay((target_frame_time - frame_time));
+                ui->delay((target_frame_time - frame_time));
             }
 
             if (end - start_timer >= 1000) {
@@ -169,7 +170,7 @@ void Ppu::ppu_mode_hblank(){
             }
 
             frame_count++;
-            //prev_frame_time = get_ticks();
+            prev_frame_time = ui->get_ticks();
 
         } else {
             lcd->LCDS_MODE_SET(MODE_OAM);

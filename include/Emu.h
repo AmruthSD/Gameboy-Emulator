@@ -1,5 +1,4 @@
-#ifndef EMU_H
-#define EMU_H
+#pragma once
 
 #include <iostream>
 #include "Cart.h"
@@ -8,6 +7,12 @@
 #include "Timer.h"
 #include "Ram.h"
 #include "Ui.h"
+#include "Ppu.h"
+#include "Dma.h"
+#include "Io.h"
+#include "Lcd.h"
+#include "Gamepad.h"
+
 using namespace std;
 
 class EMU
@@ -20,6 +25,12 @@ private:
     Bus *bus;
     Timer *timer;
     Ram *ram;
+    Ui *ui;
+    Ppu *ppu;
+    Dma *dma;
+    Io *io;
+    Lcd *lcd;
+    Gamepad *gamepad;
 
 public:
     EMU(int argv,char **argc);
@@ -27,4 +38,3 @@ public:
     void link_classes();
 };
 
-#endif

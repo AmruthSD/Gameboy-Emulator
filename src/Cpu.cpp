@@ -21,6 +21,7 @@ bool Cpu::cpu_step(){
         regs.pc++;
         inst = instruction_from_opcode(cur_opcode);
         cpu_cycles(1);
+        cpu_fetch_data();
         cpu_execute();
     }
     else{
@@ -43,11 +44,14 @@ bool Cpu::cpu_step(){
 }
 
 void Cpu::cpu_cycles(int num){
-    int n = num * 4;
-    for (int i = 0; i < n; i++)
-    {
-        ticks++;
-        timer->timer_tick();
+    for (int i=0; i<num; i++) {
+        for (int n=0; n<4; n++) {
+            ticks++;
+            timer->timer_tick();
+            ppu->ppu_tick();
+        }
+        
+        dma->dma_tick();
     }
     
 }

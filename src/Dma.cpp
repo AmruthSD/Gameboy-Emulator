@@ -15,7 +15,7 @@ void Dma::dma_tick() {
         start_delay--;
         return;
     }
-    //ppu_oam_write(byte, bus_read((value * 0x100) + byte));
+    ppu->ppu_oam_write(byte, bus->bus_read((value * 0x100) + byte));
     byte++;
     active = byte < 0xA0;
 }

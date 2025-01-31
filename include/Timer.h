@@ -14,6 +14,8 @@ private:
     uint8_t tima;
     uint8_t tma;
     uint8_t tac;
+
+public:
     Cpu *cpu;
 
 public:
